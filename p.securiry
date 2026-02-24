@@ -1,0 +1,186 @@
+# 🔒 Politique de Sécurité — JYVOS Comptable
+
+> Document officiel de sécurité — © 2026 JYVOS Comptable  
+> Dernière mise à jour : 24 février 2026
+
+---
+
+## 📋 Table des matières
+
+1. [Versions supportées](#versions-supportées)
+2. [Signaler une vulnérabilité](#signaler-une-vulnérabilité)
+3. [Mesures de sécurité en place](#mesures-de-sécurité-en-place)
+4. [Politique de mot de passe](#politique-de-mot-de-passe)
+5. [Protection des données](#protection-des-données)
+6. [Délais de réponse](#délais-de-réponse)
+7. [Responsabilités](#responsabilités)
+
+---
+
+## ✅ Versions supportées
+
+| Version | Supportée | Mises à jour sécurité |
+|---------|-----------|----------------------|
+| 2.0.x (actuelle) | ✅ Oui | ✅ Oui |
+| 1.0.x | ⚠️ Partielle | ❌ Non |
+| < 1.0 | ❌ Non | ❌ Non |
+
+> Nous recommandons toujours d'utiliser la **dernière version** de JYVOS Comptable.
+
+---
+
+## 🚨 Signaler une vulnérabilité
+
+Si vous découvrez une faille de sécurité dans JYVOS Comptable, veuillez **ne pas la divulguer publiquement** avant qu'elle soit corrigée.
+
+### Comment signaler :
+
+1. **Contactez-nous en privé** via Orange Money : `691 928 061`
+2. **Décrivez clairement** le problème :
+   - Type de vulnérabilité
+   - Étapes pour reproduire
+   - Impact potentiel
+3. **Attendez notre réponse** sous 48 heures
+
+### Ce que vous pouvez attendre :
+
+- ✅ Accusé de réception sous **48 heures**
+- 🔍 Analyse et investigation sous **7 jours**
+- 🛠 Correction déployée sous **14 jours**
+- 🏆 Remerciement public (si vous le souhaitez)
+
+---
+
+## 🛡️ Mesures de sécurité en place
+
+### 🔐 Authentification
+- Protection par **mot de passe** à l'ouverture du site
+- **Session automatique** de 30 minutes d'inactivité
+- Déconnexion automatique après timeout
+- Encodage des credentials en `base64`
+
+### 🚫 Protection du contenu
+- **Clic droit désactivé** — empêche l'inspection du code
+- **Copier/Coller désactivé** — protège le contenu
+- **Raccourcis clavier bloqués** :
+  - `F12` — DevTools
+  - `Ctrl+Shift+I` — Inspecteur
+  - `Ctrl+U` — Code source
+  - `Ctrl+S` — Sauvegarde
+- **Sélection de texte désactivée**
+
+### 🔍 Anti-inspection
+- Détection d'ouverture des outils développeur
+- Redirection automatique si inspection détectée
+- Protection contre le vol de code source
+
+### 🌐 Sécurité réseau
+- Hébergement sur **GitHub Pages** avec SSL/HTTPS intégré
+- Certificat **TLS** automatique
+- Connexions chiffrées uniquement
+
+---
+
+## 🔑 Politique de mot de passe
+
+### Exigences minimales :
+- ✅ Minimum **8 caractères**
+- ✅ Au moins **1 majuscule**
+- ✅ Au moins **1 chiffre**
+- ✅ Au moins **1 caractère spécial** (!, @, #, $...)
+- ❌ Ne pas utiliser votre nom ou prénom
+- ❌ Ne pas utiliser une date de naissance
+
+### Exemples de bons mots de passe :
+```
+JYV0S_2026!
+Compte#Secure99
+Admin@JYVOS25
+```
+
+### Règles importantes :
+- Changez votre mot de passe **tous les 3 mois**
+- Ne **jamais partager** votre mot de passe
+- Utilisez un mot de passe **unique** pour JYVOS
+- Ne notez pas votre mot de passe en clair
+
+---
+
+## 🗄️ Protection des données
+
+### Données collectées :
+| Type de donnée | Utilisation | Stockage |
+|----------------|-------------|----------|
+| Nom utilisateur | Identification | Local (navigateur) |
+| Transactions | Gestion financière | Local (navigateur) |
+| Numéro OM | Paiements | Chiffré |
+| Commentaires | Avis plateforme | Local (navigateur) |
+
+### Principes appliqués :
+- 🔒 **Minimisation des données** — Nous collectons uniquement ce qui est nécessaire
+- 💾 **Stockage local** — Les données restent sur votre appareil
+- 🚫 **Pas de vente de données** — Vos données ne sont jamais vendues à des tiers
+- 🗑️ **Droit à l'effacement** — Vous pouvez supprimer vos données à tout moment
+
+### Sauvegarde recommandée :
+- Exportez vos données **chaque semaine** en PDF ou Excel
+- Conservez une copie sur **Google Drive** ou **clé USB**
+- Ne dépendez pas uniquement du stockage navigateur
+
+---
+
+## ⏱️ Délais de réponse
+
+| Type d'incident | Priorité | Délai de réponse | Délai de correction |
+|-----------------|----------|------------------|---------------------|
+| Fuite de données | 🔴 Critique | 24 heures | 48 heures |
+| Accès non autorisé | 🔴 Critique | 24 heures | 72 heures |
+| Vulnérabilité critique | 🟠 Haute | 48 heures | 7 jours |
+| Bug de sécurité | 🟡 Moyenne | 5 jours | 14 jours |
+| Amélioration sécurité | 🟢 Faible | 7 jours | 30 jours |
+
+---
+
+## 👤 Responsabilités
+
+### Responsabilités de JYVOS Comptable :
+- ✅ Maintenir la plateforme sécurisée et à jour
+- ✅ Corriger rapidement les failles signalées
+- ✅ Informer les utilisateurs en cas d'incident
+- ✅ Protéger les données des utilisateurs
+- ✅ Fournir des mises à jour de sécurité régulières
+
+### Responsabilités de l'utilisateur :
+- ✅ Choisir un **mot de passe fort**
+- ✅ Ne pas partager ses identifiants
+- ✅ Se déconnecter après chaque session
+- ✅ Mettre à jour vers la dernière version
+- ✅ Signaler tout comportement suspect
+- ✅ Sauvegarder ses données régulièrement
+
+---
+
+## ⚖️ Clause de non-responsabilité
+
+JYVOS Comptable ne peut être tenu responsable :
+- Des pertes de données dues à un usage incorrect
+- Des accès non autorisés causés par un mot de passe faible partagé par l'utilisateur
+- Des dommages causés par des logiciels malveillants sur l'appareil de l'utilisateur
+
+---
+
+## 📞 Contact Sécurité
+
+| Canal | Contact |
+|-------|---------|
+| 📱 Orange Money | 691 928 061 |
+| 🌐 GitHub | github.com/jyvos-comptable |
+| ⏰ Disponibilité | Lun–Sam, 8h–20h |
+
+---
+
+*JYVOS Comptable s'engage à protéger vos données financières avec le plus haut niveau de sécurité possible.* 🛡️
+
+---
+
+**© 2026 JYVOS Comptable — Tous droits réservés**
