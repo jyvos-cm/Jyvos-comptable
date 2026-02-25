@@ -3,484 +3,1372 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JYVOS Comptable — Connexion</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>JYVOS Comptable — Gérez vos finances</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold: #c9a84c;
-    --gold-light: #f0d080;
-    --dark: #0a0c0f;
-    --dark2: #12151a;
-    --dark3: #1a1e26;
-    --surface: #1e2330;
-    --surface2: #252b3b;
-    --border: rgba(201,168,76,0.15);
-    --text: #e8eaf0;
-    --muted: #7a8099;
-    --green: #2ecc71;
-    --red: #e74c3c;
-    --blue: #3498db;
-    --admin-color: #c9a84c;
-    --user-color: #3498db;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --gold:#c9a84c; --gold2:#f0d080; --gold-dim:rgba(201,168,76,0.12);
+  --dark:#080a0e; --dark2:#0f1218; --dark3:#161b24; --surface:#1c2230;
+  --surface2:#232b3a; --border:rgba(255,255,255,0.07); --border-gold:rgba(201,168,76,0.2);
+  --text:#eef0f5; --muted:#6b7590; --muted2:#4a5268;
+  --green:#27ae60; --green-dim:rgba(39,174,96,0.12);
+  --red:#e74c3c; --red-dim:rgba(231,76,60,0.12);
+  --blue:#2980b9; --blue-dim:rgba(41,128,185,0.12);
+  --orange:#e67e22; --orange-dim:rgba(230,126,34,0.12);
+  --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Satoshi',sans-serif;background:var(--dark);color:var(--text);display:flex;flex-direction:column;}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--dark);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* BG */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.08;}
+.bg-orb1{width:600px;height:600px;background:var(--gold);top:-200px;left:-200px;}
+.bg-orb2{width:400px;height:400px;background:#2980b9;bottom:-100px;right:-100px;}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:48px 48px;}
 
-  /* ===== BG ANIMATED ===== */
-  .bg-anim {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background: radial-gradient(ellipse at 20% 20%, rgba(201,168,76,0.07) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(52,152,219,0.05) 0%, transparent 50%);
-  }
-  .bg-anim::after {
-    content:'';
-    position: absolute; inset: 0;
-    background-image: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(201,168,76,0.02) 40px, rgba(201,168,76,0.02) 41px),
-                      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(201,168,76,0.02) 40px, rgba(201,168,76,0.02) 41px);
-  }
+/* PAGES */
+.page{display:none;flex-direction:column;height:100%;position:relative;z-index:1;overflow:hidden;}
+.page.active{display:flex;}
 
-  /* ===== PAGES ===== */
-  .page { display: none; min-height: 100vh; position: relative; z-index: 1; }
-  .page.active { display: flex; }
+/* ===================== LANDING ===================== */
+#landing{align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.landing-wrap{width:100%;max-width:460px;animation:fadeUp .6s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
-  /* ===== LOGIN PAGE ===== */
-  #login-page {
-    align-items: center; justify-content: center; padding: 20px;
-  }
-  .login-card {
-    background: var(--dark2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 48px 40px;
-    width: 100%; max-width: 420px;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
-    animation: slideUp 0.5s ease;
-  }
-  @keyframes slideUp {
-    from { opacity:0; transform: translateY(30px); }
-    to { opacity:1; transform: translateY(0); }
-  }
-  .login-logo {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
-  }
-  .logo-icon {
-    width: 48px; height: 48px; border-radius: 14px;
-    background: linear-gradient(135deg, var(--gold), #8b5e1a);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-weight: 800;
-    font-size: 20px; color: var(--dark);
-  }
-  .logo-text { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; }
-  .logo-text span { color: var(--gold); }
-  .login-title {
-    font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .login-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:40px;justify-content:center;}
+.brand-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--gold),#7a4e10);display:flex;align-items:center;justify-content:center;font-family:'Clash Display',sans-serif;font-weight:700;font-size:24px;color:#080a0e;box-shadow:0 8px 24px rgba(201,168,76,0.3);}
+.brand-name{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.5px;}
+.brand-name span{color:var(--gold);}
 
-  .tab-switch {
-    display: flex; background: var(--dark3); border-radius: 10px;
-    padding: 4px; margin-bottom: 28px; gap: 4px;
-  }
-  .tab-btn {
-    flex: 1; padding: 10px; border: none; border-radius: 8px;
-    background: transparent; color: var(--muted); font-size: 14px;
-    font-family: 'DM Sans', sans-serif; cursor: pointer;
-    transition: all 0.3s; font-weight: 500;
-  }
-  .tab-btn.active {
-    background: var(--surface); color: var(--text);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .tab-btn.admin.active { color: var(--gold); }
-  .tab-btn.user.active { color: var(--blue); }
+.tagline{text-align:center;margin-bottom:40px;}
+.tagline h1{font-family:'Clash Display',sans-serif;font-size:32px;font-weight:600;line-height:1.2;margin-bottom:10px;}
+.tagline h1 em{color:var(--gold);font-style:normal;}
+.tagline p{font-size:15px;color:var(--muted);line-height:1.6;}
 
-  .field { margin-bottom: 18px; }
-  .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
-  .field input {
-    width: 100%; padding: 13px 16px;
-    background: var(--dark3); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px; color: var(--text); font-size: 14px;
-    font-family: 'DM Sans', sans-serif; outline: none;
-    transition: border-color 0.2s;
-  }
-  .field input:focus { border-color: var(--gold); }
-  .field input.user-focus:focus { border-color: var(--blue); }
+.landing-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.land-btn{padding:18px 16px;border-radius:var(--r);border:1px solid var(--border);background:var(--dark2);cursor:pointer;transition:all .25s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.land-btn:hover{transform:translateY(-3px);border-color:var(--border-gold);}
+.land-btn .icon{font-size:28px;}
+.land-btn .label{font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;}
+.land-btn .desc{font-size:11px;color:var(--muted);}
+.land-btn.primary{border-color:var(--border-gold);background:var(--gold-dim);}
+.land-btn.primary .label{color:var(--gold);}
+.land-btn.admin-btn{border-color:rgba(231,76,60,0.2);background:rgba(231,76,60,0.05);}
+.land-btn.admin-btn .label{color:#e74c3c;}
 
-  .admin-hint {
-    background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 10px; padding: 12px 14px; font-size: 12px;
-    color: var(--gold); margin-bottom: 18px; display: none;
-  }
-  .admin-hint.show { display: flex; align-items: center; gap: 8px; }
+.land-full{width:100%;padding:15px;border-radius:var(--r);border:1px solid var(--border);background:var(--dark2);cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;color:var(--muted);}
+.land-full:hover{border-color:var(--border-gold);color:var(--text);}
 
-  .btn-login {
-    width: 100%; padding: 14px; border: none; border-radius: 12px;
-    font-size: 15px; font-weight: 600; cursor: pointer;
-    font-family: 'Syne', sans-serif; letter-spacing: 0.3px;
-    transition: all 0.3s; margin-top: 8px;
-  }
-  .btn-login.admin-mode {
-    background: linear-gradient(135deg, var(--gold), #8b5e1a);
-    color: var(--dark);
-  }
-  .btn-login.user-mode {
-    background: linear-gradient(135deg, var(--blue), #1a5276);
-    color: #fff;
-  }
-  .btn-login:hover { opacity: 0.9; transform: translateY(-1px); }
+/* ===================== AUTH PAGES ===================== */
+#register-page,#login-page,#admin-login-page{align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.auth-card{width:100%;max-width:420px;background:var(--dark2);border:1px solid var(--border);border-radius:20px;padding:36px 32px;animation:fadeUp .4s ease both;}
+.auth-back{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;cursor:pointer;margin-bottom:24px;transition:color .2s;}
+.auth-back:hover{color:var(--text);}
+.auth-title{font-family:'Clash Display',sans-serif;font-size:24px;font-weight:600;margin-bottom:6px;}
+.auth-sub{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.5;}
 
-  .error-msg {
-    background: rgba(231,76,60,0.12); border: 1px solid rgba(231,76,60,0.3);
-    color: var(--red); border-radius: 8px; padding: 10px 14px;
-    font-size: 13px; margin-top: 12px; display: none;
-  }
-  .error-msg.show { display: block; }
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+.field input,.field select{width:100%;padding:13px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:'Satoshi',sans-serif;outline:none;transition:border-color .2s;}
+.field input:focus,.field select:focus{border-color:var(--gold);}
+.field select{appearance:none;cursor:pointer;}
+.field .hint{font-size:11px;color:var(--muted);margin-top:5px;}
 
-  /* ===== ADMIN DASHBOARD ===== */
-  #admin-page { flex-direction: column; }
-  #user-page { flex-direction: column; }
+.phone-wrap{display:flex;gap:8px;}
+.phone-prefix{padding:13px 14px;background:var(--dark3);border:1px solid var(--border);border-radius:10px;color:var(--gold);font-size:14px;font-weight:600;white-space:nowrap;}
 
-  .topbar {
-    height: 60px; background: var(--dark2); border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 24px; position: sticky; top: 0; z-index: 100;
-  }
-  .topbar-left { display: flex; align-items: center; gap: 12px; }
-  .topbar-badge {
-    padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
-    letter-spacing: 0.5px; text-transform: uppercase;
-  }
-  .badge-admin { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
-  .badge-user { background: rgba(52,152,219,0.15); color: var(--blue); border: 1px solid rgba(52,152,219,0.3); }
+.btn-primary{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gold),#8b5e1a);color:#080a0e;font-size:15px;font-weight:700;font-family:'Clash Display',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.3px;}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,168,76,0.25);}
+.btn-secondary{width:100%;padding:13px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:14px;font-family:'Satoshi',sans-serif;cursor:pointer;transition:all .2s;margin-top:10px;}
+.btn-secondary:hover{border-color:var(--border-gold);color:var(--text);}
 
-  .topbar-right { display: flex; align-items: center; gap: 12px; }
-  .user-info { text-align: right; }
-  .user-info .name { font-size: 14px; font-weight: 600; }
-  .user-info .role { font-size: 11px; color: var(--muted); }
-  .avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 14px;
-  }
-  .avatar-admin { background: linear-gradient(135deg, var(--gold), #8b5e1a); color: var(--dark); }
-  .avatar-user { background: linear-gradient(135deg, var(--blue), #1a5276); color: #fff; }
+.alert{padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;display:none;}
+.alert.show{display:block;}
+.alert-err{background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.25);color:#e74c3c;}
+.alert-ok{background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.25);color:#27ae60;}
+.alert-info{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:var(--gold);}
 
-  .btn-logout {
-    padding: 7px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-    background: transparent; color: var(--muted); font-size: 13px; cursor: pointer;
-    transition: all 0.2s; font-family: 'DM Sans', sans-serif;
-  }
-  .btn-logout:hover { background: rgba(231,76,60,0.1); color: var(--red); border-color: rgba(231,76,60,0.3); }
+/* CONFIRM CODE */
+.code-boxes{display:flex;gap:10px;justify-content:center;margin:20px 0;}
+.code-box{width:46px;height:54px;border-radius:10px;border:2px solid var(--border);background:var(--dark3);color:var(--text);font-size:22px;font-weight:700;text-align:center;outline:none;transition:border-color .2s;font-family:'Clash Display',sans-serif;}
+.code-box:focus{border-color:var(--gold);}
 
-  /* ===== CONTENT ===== */
-  .content { padding: 28px 24px; max-width: 1100px; margin: 0 auto; width: 100%; }
-  .page-title {
-    font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .page-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+/* ===================== APP SHELL ===================== */
+#app-page,#admin-page{flex-direction:column;}
+.topbar{height:58px;background:var(--dark2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 18px;flex-shrink:0;z-index:50;}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-logo{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#7a4e10);display:flex;align-items:center;justify-content:center;font-family:'Clash Display',sans-serif;font-weight:700;font-size:14px;color:#080a0e;}
+.tb-title{font-family:'Clash Display',sans-serif;font-size:16px;font-weight:600;}
+.tb-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.badge-user{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(41,128,185,.25);}
+.badge-admin{background:var(--gold-dim);color:var(--gold);border:1px solid var(--border-gold);}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.tb-notif{position:relative;cursor:pointer;font-size:18px;}
+.notif-dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--red);border-radius:50%;}
+.tb-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#1a5276);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;}
 
-  /* ===== STATS GRID ===== */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
-  .stat-card {
-    background: var(--dark2); border: 1px solid var(--border);
-    border-radius: 14px; padding: 20px;
-    transition: transform 0.2s;
-  }
-  .stat-card:hover { transform: translateY(-2px); }
-  .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .stat-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; }
-  .stat-change { font-size: 12px; margin-top: 4px; }
-  .up { color: var(--green); }
-  .down { color: var(--red); }
+/* BOTTOM NAV */
+.bottom-nav{height:62px;background:var(--dark2);border-top:1px solid var(--border);display:flex;flex-shrink:0;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;transition:color .2s;color:var(--muted2);border:none;background:none;}
+.nav-item.active{color:var(--gold);}
+.nav-item .nav-icon{font-size:20px;}
+.nav-item .nav-label{font-size:10px;font-weight:600;letter-spacing:.3px;}
 
-  /* ===== SECTIONS ===== */
-  .section { margin-bottom: 28px; }
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .section-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; }
+/* CONTENT AREA */
+.app-content{flex:1;overflow-y:auto;overflow-x:hidden;}
+.tab-content{display:none;padding:18px;animation:fadeUp .3s ease both;}
+.tab-content.active{display:block;}
 
-  /* ===== TABLE ===== */
-  .table-wrap {
-    background: var(--dark2); border: 1px solid var(--border);
-    border-radius: 14px; overflow: hidden;
-  }
-  table { width: 100%; border-collapse: collapse; }
-  th {
-    padding: 12px 16px; font-size: 11px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.5px;
-    background: var(--dark3); text-align: left; font-weight: 600;
-  }
-  td { padding: 13px 16px; font-size: 14px; border-top: 1px solid rgba(255,255,255,0.04); }
-  tr:hover td { background: rgba(255,255,255,0.02); }
-  .status-badge {
-    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
-  }
-  .status-active { background: rgba(46,204,113,0.15); color: var(--green); }
-  .status-pending { background: rgba(241,196,15,0.15); color: #f1c40f; }
-  .status-inactive { background: rgba(231,76,60,0.1); color: var(--red); }
+/* ===================== DASHBOARD TAB ===================== */
+.welcome-bar{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.03));border:1px solid var(--border-gold);border-radius:var(--r);padding:18px;margin-bottom:18px;display:flex;align-items:center;gap:14px;}
+.welcome-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#1a5276);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;}
+.welcome-name{font-family:'Clash Display',sans-serif;font-size:16px;font-weight:600;}
+.welcome-sub{font-size:12px;color:var(--muted);}
 
-  /* ===== ADMIN SECURITY SECTION ===== */
-  .security-panel {
-    background: var(--dark2); border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 14px; padding: 24px;
-  }
-  .security-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .security-row:last-child { border-bottom: none; padding-bottom: 0; }
-  .security-label { font-size: 14px; font-weight: 500; }
-  .security-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .toggle {
-    width: 44px; height: 24px; background: var(--dark3); border-radius: 12px;
-    position: relative; cursor: pointer; transition: background 0.3s; border: none;
-    flex-shrink: 0;
-  }
-  .toggle.on { background: var(--gold); }
-  .toggle::after {
-    content: ''; position: absolute; top: 3px; left: 3px;
-    width: 18px; height: 18px; background: #fff; border-radius: 50%;
-    transition: transform 0.3s;
-  }
-  .toggle.on::after { transform: translateX(20px); }
+/* CAPITAL CARD */
+.capital-card{background:linear-gradient(135deg,#1a2a1a,#0f1a0f);border:1px solid rgba(39,174,96,.2);border-radius:var(--r);padding:22px;margin-bottom:18px;position:relative;overflow:hidden;}
+.capital-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:rgba(39,174,96,.06);border-radius:50%;}
+.capital-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.capital-value{font-family:'Clash Display',sans-serif;font-size:36px;font-weight:700;color:var(--green);margin-bottom:12px;}
+.capital-currency{font-size:16px;color:var(--muted);}
+.capital-row{display:flex;gap:12px;}
+.capital-mini{flex:1;background:rgba(0,0,0,.2);border-radius:10px;padding:10px 12px;}
+.capital-mini-label{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.capital-mini-val{font-family:'Clash Display',sans-serif;font-size:16px;font-weight:600;}
 
-  /* ===== RATING SECTION ===== */
-  .rating-section {
-    background: var(--dark2); border: 1px solid var(--border);
-    border-radius: 14px; padding: 24px; margin-bottom: 28px;
-  }
-  .rating-header { margin-bottom: 20px; }
-  .rating-header h3 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-  .rating-header p { font-size: 14px; color: var(--muted); }
+/* CARDS GRID */
+.cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+.mini-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:16px;transition:transform .2s;}
+.mini-card:hover{transform:translateY(-2px);}
+.mini-card-icon{font-size:22px;margin-bottom:8px;}
+.mini-card-label{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.mini-card-val{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:600;}
 
-  .rating-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .rating-cat {
-    background: var(--dark3); border-radius: 12px; padding: 16px;
-  }
-  .cat-name { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
-  .stars { display: flex; gap: 4px; margin-bottom: 8px; }
-  .star {
-    font-size: 22px; cursor: pointer; transition: transform 0.15s;
-    color: rgba(255,255,255,0.15); user-select: none;
-  }
-  .star.filled { color: var(--gold); }
-  .star:hover { transform: scale(1.2); }
-  .cat-rating-val { font-size: 12px; color: var(--muted); }
+/* CONSEIL BANNER */
+.conseil-banner{background:var(--gold-dim);border:1px solid var(--border-gold);border-radius:var(--r);padding:14px 16px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-start;}
+.conseil-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.conseil-text{font-size:13px;line-height:1.55;color:var(--gold2);}
+.conseil-text strong{color:var(--gold);display:block;margin-bottom:3px;font-size:12px;text-transform:uppercase;letter-spacing:.4px;}
 
-  .rating-comment { margin-bottom: 16px; }
-  .rating-comment label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
-  .rating-comment textarea {
-    width: 100%; padding: 14px; background: var(--dark3);
-    border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
-    color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif;
-    resize: vertical; min-height: 100px; outline: none; transition: border-color 0.2s;
-  }
-  .rating-comment textarea:focus { border-color: var(--blue); }
+/* TRANSACTIONS */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.section-title{font-family:'Clash Display',sans-serif;font-size:15px;font-weight:600;}
+.btn-add{padding:7px 14px;border-radius:8px;background:var(--gold-dim);border:1px solid var(--border-gold);color:var(--gold);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-add:hover{background:rgba(201,168,76,.2);}
 
-  .btn-submit {
-    padding: 12px 28px; border-radius: 10px; border: none;
-    background: linear-gradient(135deg, var(--blue), #1a5276);
-    color: #fff; font-size: 14px; font-weight: 600;
-    font-family: 'Syne', sans-serif; cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+.tx-list{display:flex;flex-direction:column;gap:8px;}
+.tx-item{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:13px 14px;display:flex;align-items:center;gap:12px;transition:background .2s;}
+.tx-item:hover{background:var(--dark3);}
+.tx-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.tx-icon.in{background:var(--green-dim);}
+.tx-icon.out{background:var(--red-dim);}
+.tx-desc{flex:1;}
+.tx-name{font-size:13px;font-weight:500;margin-bottom:2px;}
+.tx-date{font-size:11px;color:var(--muted);}
+.tx-amount{font-family:'Clash Display',sans-serif;font-size:15px;font-weight:600;}
+.tx-amount.in{color:var(--green);}
+.tx-amount.out{color:var(--red);}
 
-  /* ===== REVIEWS LIST ===== */
-  .reviews-list { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-  .review-card {
-    background: var(--dark3); border-radius: 12px; padding: 16px;
-    animation: fadeIn 0.4s ease;
-  }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-  .review-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .review-user { display: flex; align-items: center; gap: 10px; }
-  .review-avatar {
-    width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), #1a5276);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; color: #fff;
-  }
-  .review-name { font-size: 14px; font-weight: 600; }
-  .review-date { font-size: 11px; color: var(--muted); }
-  .review-stars { display: flex; gap: 2px; font-size: 14px; }
-  .review-text { font-size: 13px; color: #aab; line-height: 1.6; }
-  .review-cats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-  .review-cat-tag {
-    padding: 3px 10px; border-radius: 20px; font-size: 11px;
-    background: rgba(52,152,219,0.1); color: var(--blue); font-weight: 500;
-  }
+/* ABONNEMENT */
+.abo-banner{background:linear-gradient(135deg,rgba(230,126,34,.1),rgba(230,126,34,.03));border:1px solid rgba(230,126,34,.25);border-radius:var(--r);padding:16px;margin-bottom:18px;}
+.abo-title{font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;color:var(--orange);margin-bottom:6px;}
+.abo-text{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px;}
+.abo-om{background:rgba(0,0,0,.3);border-radius:10px;padding:10px 12px;font-size:13px;}
+.abo-om span{color:var(--gold);font-weight:600;}
+.btn-abo{margin-top:10px;padding:10px 18px;border-radius:10px;background:var(--orange-dim);border:1px solid rgba(230,126,34,.3);color:var(--orange);font-size:13px;font-weight:600;cursor:pointer;width:100%;font-family:'Clash Display',sans-serif;}
 
-  /* ===== SUCCESS TOAST ===== */
-  .toast {
-    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-    background: var(--dark2); border: 1px solid rgba(46,204,113,0.3);
-    border-radius: 12px; padding: 14px 20px;
-    display: flex; align-items: center; gap: 10px;
-    color: var(--green); font-size: 14px; font-weight: 500;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    transform: translateX(200px); opacity: 0;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .toast.show { transform: translateX(0); opacity: 1; }
+/* ===================== ADD TX MODAL ===================== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-sheet{background:var(--dark2);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:500px;animation:slideUp .3s ease both;border-top:1px solid var(--border);}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;}
+.modal-title{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:600;margin-bottom:20px;}
+.type-toggle{display:flex;gap:8px;margin-bottom:16px;}
+.type-btn{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Satoshi',sans-serif;}
+.type-btn.active-in{background:var(--green-dim);border-color:rgba(39,174,96,.3);color:var(--green);}
+.type-btn.active-out{background:var(--red-dim);border-color:rgba(231,76,60,.3);color:var(--red);}
 
-  /* ===== ADMIN ONLY: REVIEWS VIEW ===== */
-  .admin-reviews {
-    background: var(--dark2); border: 1px solid var(--border);
-    border-radius: 14px; padding: 24px;
-  }
-  .review-admin-card {
-    background: var(--surface); border-radius: 10px; padding: 14px;
-    margin-bottom: 10px; border-left: 3px solid var(--gold);
-  }
-  .avg-score {
-    display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
-    padding: 16px; background: rgba(201,168,76,0.05);
-    border-radius: 12px; border: 1px solid rgba(201,168,76,0.15);
-  }
-  .avg-big { font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800; color: var(--gold); }
-  .avg-stars { display: flex; gap: 3px; font-size: 20px; }
-  .avg-count { font-size: 13px; color: var(--muted); }
+/* ===================== MESSAGES TAB ===================== */
+.msg-list{display:flex;flex-direction:column;gap:8px;}
+.msg-thread{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:13px 14px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:all .2s;}
+.msg-thread:hover{border-color:var(--border-gold);}
+.msg-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;}
+.msg-av-admin{background:linear-gradient(135deg,var(--gold),#7a4e10);color:#080a0e;}
+.msg-av-sys{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(41,128,185,.2);}
+.msg-info{flex:1;min-width:0;}
+.msg-name{font-size:13px;font-weight:600;margin-bottom:3px;}
+.msg-preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.msg-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.msg-time{font-size:10px;color:var(--muted);}
+.msg-unread{width:18px;height:18px;background:var(--gold);border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#080a0e;}
 
-  /* ===== RESPONSIVE ===== */
-  @media (max-width: 600px) {
-    .login-card { padding: 32px 24px; }
-    .content { padding: 20px 16px; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .rating-categories { grid-template-columns: 1fr 1fr; }
-    .topbar { padding: 0 16px; }
-  }
+/* CHAT VIEW */
+.chat-view{display:none;flex-direction:column;height:100%;}
+.chat-view.open{display:flex;}
+.chat-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:var(--dark2);flex-shrink:0;}
+.chat-back{font-size:18px;cursor:pointer;color:var(--muted);}
+.chat-header-info{flex:1;}
+.chat-header-name{font-family:'Clash Display',sans-serif;font-size:15px;font-weight:600;}
+.chat-header-status{font-size:11px;color:var(--green);}
+.chat-enc{font-size:10px;color:var(--muted);padding:3px 8px;background:var(--dark3);border-radius:20px;display:flex;align-items:center;gap:4px;}
+.chat-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.msg-bubble{max-width:78%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.5;}
+.msg-bubble.sent{background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.1));border:1px solid var(--border-gold);align-self:flex-end;border-bottom-right-radius:4px;}
+.msg-bubble.recv{background:var(--dark3);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px;}
+.msg-bubble .btime{font-size:10px;color:var(--muted);margin-top:5px;text-align:right;}
+.msg-bubble.recv .btime{text-align:left;}
+.chat-input-wrap{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:10px;background:var(--dark2);flex-shrink:0;}
+.chat-input{flex:1;padding:12px 14px;background:var(--dark3);border:1px solid var(--border);border-radius:24px;color:var(--text);font-size:14px;font-family:'Satoshi',sans-serif;outline:none;transition:border-color .2s;}
+.chat-input:focus{border-color:var(--gold);}
+.chat-send{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#8b5e1a);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:opacity .2s;}
+.chat-send:hover{opacity:.85;}
+
+/* ===================== FINANCES TAB ===================== */
+.fin-section{margin-bottom:22px;}
+.progress-bar-wrap{background:var(--dark3);border-radius:8px;height:10px;overflow:hidden;margin-top:8px;}
+.progress-bar{height:100%;border-radius:8px;transition:width .8s ease;}
+.fin-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);}
+.fin-row:last-child{border-bottom:none;}
+.fin-row-label{font-size:13px;color:var(--muted);}
+.fin-row-val{font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;}
+
+/* ADMIN */
+.admin-nav{display:flex;gap:8px;overflow-x:auto;padding:0 18px 0;margin-bottom:0;scrollbar-width:none;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--dark2);}
+.admin-nav::-webkit-scrollbar{display:none;}
+.admin-tab{padding:14px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;font-family:'Clash Display',sans-serif;}
+.admin-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+.user-card-admin{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;transition:border-color .2s;}
+.user-card-admin:hover{border-color:var(--border-gold);}
+.uca-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.uca-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#1a5276);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;}
+.uca-name{font-size:14px;font-weight:600;}
+.uca-phone{font-size:12px;color:var(--muted);}
+.uca-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.uca-stat{background:var(--dark3);border-radius:8px;padding:8px 10px;text-align:center;}
+.uca-stat-label{font-size:10px;color:var(--muted);margin-bottom:3px;}
+.uca-stat-val{font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;}
+.btn-msg-user{margin-top:10px;width:100%;padding:9px;border-radius:9px;background:var(--blue-dim);border:1px solid rgba(41,128,185,.25);color:var(--blue);font-size:13px;font-weight:600;cursor:pointer;font-family:'Clash Display',sans-serif;}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);z-index:500;background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:13px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.t-ok{border-color:rgba(39,174,96,.3);color:var(--green);}
+.toast.t-info{border-color:var(--border-gold);color:var(--gold);}
+.toast.t-err{border-color:rgba(231,76,60,.3);color:var(--red);}
+
+/* MISC */
+.divider{height:1px;background:var(--border);margin:16px 0;}
+.empty-state{text-align:center;padding:32px 20px;color:var(--muted);font-size:13px;}
+.empty-state .ei{font-size:36px;margin-bottom:10px;}
+
+@media(max-width:400px){
+  .auth-card{padding:28px 20px;}
+  .capital-value{font-size:28px;}
+  .cards2{grid-template-columns:1fr 1fr;}
+}
 </style>
 </head>
 <body>
-<div class="bg-anim"></div>
+<div class="bg"><div class="bg-orb bg-orb1"></div><div class="bg-orb bg-orb2"></div><div class="bg-grid"></div></div>
 
-<!-- ========== LOGIN PAGE ========== -->
-<div id="login-page" class="page active">
-  <div class="login-card">
-    <div class="login-logo">
-      <div class="logo-icon">J</div>
-      <div class="logo-text">JYVOS <span>Comptable</span></div>
+<!-- ======================================================
+     LANDING
+====================================================== -->
+<div class="page active" id="landing">
+  <div class="landing-wrap">
+    <div class="brand">
+      <div class="brand-icon">J</div>
+      <div class="brand-name">JYVOS <span>Comptable</span></div>
     </div>
-    <h1 class="login-title">Connexion</h1>
-    <p class="login-sub">Gérez vos finances, boostez vos profits 💰</p>
-
-    <div class="tab-switch">
-      <button class="tab-btn user active" onclick="switchTab('user')">👤 Utilisateur</button>
-      <button class="tab-btn admin" onclick="switchTab('admin')">🔐 Administrateur</button>
+    <div class="tagline">
+      <h1>Gérez vos finances,<br><em>boostez vos profits</em> 💰</h1>
+      <p>Plateforme de gestion financière professionnelle pour les entrepreneurs et commerçants africains.</p>
     </div>
-
-    <div class="admin-hint" id="admin-hint">
-      🔒 Accès confidentiel — Réservé aux administrateurs autorisés
+    <div class="landing-grid">
+      <button class="land-btn primary" onclick="goTo('register-page')">
+        <span class="icon">✍️</span>
+        <span class="label">Inscription</span>
+        <span class="desc">Créer un compte</span>
+      </button>
+      <button class="land-btn" onclick="goTo('login-page')">
+        <span class="icon">🔑</span>
+        <span class="label">Connexion</span>
+        <span class="desc">Se connecter</span>
+      </button>
+      <button class="land-btn" onclick="showForgot()">
+        <span class="icon">🔒</span>
+        <span class="label">Mot de passe</span>
+        <span class="desc">Récupérer</span>
+      </button>
+      <button class="land-btn admin-btn" onclick="goTo('admin-login-page')">
+        <span class="icon">🛡️</span>
+        <span class="label">Administrateur</span>
+        <span class="desc">Accès restreint</span>
+      </button>
     </div>
-
-    <div class="field">
-      <label>Identifiant</label>
-      <input type="text" id="login-id" placeholder="Votre identifiant" autocomplete="off">
-    </div>
-    <div class="field">
-      <label>Mot de passe</label>
-      <input type="password" id="login-pass" placeholder="••••••••">
-    </div>
-    <div class="field" id="admin-code-field" style="display:none">
-      <label>Code d'accès administrateur</label>
-      <input type="password" id="admin-code" placeholder="Code secret à 6 chiffres">
-    </div>
-
-    <button class="btn-login user-mode" id="btn-login" onclick="doLogin()">Se connecter</button>
-    <div class="error-msg" id="error-msg">❌ Identifiants incorrects. Veuillez réessayer.</div>
-
-    <p style="margin-top:20px;font-size:12px;color:var(--muted);text-align:center">
-      🧪 Test — Utilisateur: <strong>user / user123</strong> | Admin: <strong>admin / admin123 / 123456</strong>
-    </p>
+    <button class="land-full" onclick="goTo('login-page')">
+      📱 Connexion rapide par téléphone
+    </button>
+    <p style="text-align:center;font-size:11px;color:var(--muted2);margin-top:16px">Abonnement 500 FCFA/mois · Orange Money</p>
   </div>
 </div>
 
-<!-- ========== ADMIN DASHBOARD ========== -->
-<div id="admin-page" class="page">
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="logo-icon" style="width:36px;height:36px;font-size:15px">J</div>
-      <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px">JYVOS</span>
-      <span class="topbar-badge badge-admin">🔐 Admin</span>
-    </div>
-    <div class="topbar-right">
-      <div class="user-info">
-        <div class="name">Super Admin</div>
-        <div class="role" style="color:var(--gold)">Accès total</div>
+<!-- ======================================================
+     INSCRIPTION
+====================================================== -->
+<div class="page" id="register-page">
+  <div style="overflow-y:auto;flex:1;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <div class="auth-card">
+    <div class="auth-back" onclick="goTo('landing')">← Retour</div>
+    <div class="auth-title">Créer un compte 🎉</div>
+    <div class="auth-sub">Inscrivez-vous avec votre numéro de téléphone et commencez à gérer vos finances.</div>
+
+    <div id="reg-step1">
+      <div class="alert alert-err" id="reg-err"></div>
+      <div class="field">
+        <label>Nom complet</label>
+        <input type="text" id="reg-name" placeholder="Ex: Jean Pascal Ngah">
       </div>
-      <div class="avatar avatar-admin">SA</div>
-      <button class="btn-logout" onclick="logout()">Déconnexion</button>
+      <div class="field">
+        <label>Numéro de téléphone</label>
+        <div class="phone-wrap">
+          <div class="phone-prefix">🇨🇲 +237</div>
+          <input type="tel" id="reg-phone" placeholder="6XX XXX XXX" maxlength="9">
+        </div>
+        <div class="hint">Un code de confirmation vous sera envoyé</div>
+      </div>
+      <div class="field">
+        <label>Type de commerce</label>
+        <select id="reg-type">
+          <option value="">Sélectionner...</option>
+          <option>Commerce général</option>
+          <option>Restaurant / Alimentation</option>
+          <option>Boutique vêtements</option>
+          <option>Pharmacie / Santé</option>
+          <option>Agriculture / Élevage</option>
+          <option>Services / Prestation</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Capital de départ (FCFA)</label>
+        <input type="number" id="reg-capital" placeholder="Ex: 150000">
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="reg-pass" placeholder="Minimum 6 caractères">
+      </div>
+      <div class="field">
+        <label>Confirmer le mot de passe</label>
+        <input type="password" id="reg-pass2" placeholder="Répétez le mot de passe">
+      </div>
+      <button class="btn-primary" onclick="sendCode()">📲 Recevoir le code de confirmation</button>
+      <button class="btn-secondary" onclick="goTo('login-page')">Déjà inscrit ? Se connecter</button>
+    </div>
+
+    <div id="reg-step2" style="display:none">
+      <div class="alert alert-info show">📱 Un code de 4 chiffres a été envoyé au <strong id="phone-display"></strong></div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5">Entrez le code reçu pour confirmer votre inscription :</p>
+      <div class="code-boxes">
+        <input class="code-box" maxlength="1" id="c1" oninput="nextCode(this,'c2')">
+        <input class="code-box" maxlength="1" id="c2" oninput="nextCode(this,'c3')">
+        <input class="code-box" maxlength="1" id="c3" oninput="nextCode(this,'c4')">
+        <input class="code-box" maxlength="1" id="c4" oninput="nextCode(this,null)">
+      </div>
+      <div class="alert alert-err" id="code-err"></div>
+      <button class="btn-primary" onclick="verifyCode()">✅ Confirmer l'inscription</button>
+      <button class="btn-secondary" onclick="resendCode()">🔄 Renvoyer le code</button>
+      <p style="text-align:center;font-size:11px;color:var(--muted2);margin-top:10px">Code de démo : <strong style="color:var(--gold)">1234</strong></p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     CONNEXION
+====================================================== -->
+<div class="page" id="login-page">
+  <div style="overflow-y:auto;flex:1;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <div class="auth-card">
+    <div class="auth-back" onclick="goTo('landing')">← Retour</div>
+    <div class="auth-title">Connexion 🔑</div>
+    <div class="auth-sub">Accédez à votre espace de gestion financière.</div>
+    <div class="alert alert-err" id="login-err"></div>
+    <div class="field">
+      <label>Numéro de téléphone</label>
+      <div class="phone-wrap">
+        <div class="phone-prefix">🇨🇲 +237</div>
+        <input type="tel" id="login-phone" placeholder="6XX XXX XXX" maxlength="9">
+      </div>
+    </div>
+    <div class="field">
+      <label>Mot de passe</label>
+      <input type="password" id="login-pass" placeholder="Votre mot de passe">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">Se connecter →</button>
+    <button class="btn-secondary" onclick="goTo('register-page')">Pas encore de compte ? S'inscrire</button>
+    <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px;cursor:pointer" onclick="showForgot()">Mot de passe oublié ?</p>
+    <div class="divider"></div>
+    <p style="font-size:11px;color:var(--muted2);text-align:center">🧪 Démo : téléphone <strong style="color:var(--gold)">690000001</strong> / mdp <strong style="color:var(--gold)">demo123</strong></p>
+  </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     ADMIN LOGIN
+====================================================== -->
+<div class="page" id="admin-login-page">
+  <div style="overflow-y:auto;flex:1;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <div class="auth-card" style="border-color:rgba(231,76,60,.2);">
+    <div class="auth-back" onclick="goTo('landing')">← Retour</div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:40px;margin-bottom:8px;">🛡️</div>
+      <div class="auth-title">Accès Administrateur</div>
+      <div class="auth-sub">Zone hautement sécurisée. Accès réservé exclusivement à l'administrateur JYVOS.</div>
+    </div>
+    <div class="alert alert-err" id="admin-err"></div>
+    <div class="field">
+      <label>Identifiant Admin</label>
+      <input type="text" id="admin-id" placeholder="Identifiant confidentiel" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Mot de passe Admin</label>
+      <input type="password" id="admin-pass" placeholder="••••••••">
+    </div>
+    <div class="field">
+      <label>Code de sécurité (6 chiffres)</label>
+      <input type="password" id="admin-code" placeholder="Code secret" maxlength="6">
+    </div>
+    <button class="btn-primary" style="background:linear-gradient(135deg,#e74c3c,#7b1a1a);color:#fff;" onclick="doAdminLogin()">🔐 Accès sécurisé</button>
+    <p style="text-align:center;font-size:11px;color:var(--muted2);margin-top:14px">Toute tentative non autorisée est enregistrée</p>
+  </div>
+  </div>
+</div>
+
+<!-- ======================================================
+     USER APP
+====================================================== -->
+<div class="page" id="app-page">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">J</div>
+      <div class="tb-title">JYVOS</div>
+      <span class="tb-badge badge-user">Mon compte</span>
+    </div>
+    <div class="tb-right">
+      <div class="tb-notif" onclick="openChat('support')">🔔<div class="notif-dot" id="notif-dot"></div></div>
+      <div class="tb-avatar" id="user-av">JP</div>
+      <button style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;" onclick="logout()">⬅</button>
     </div>
   </div>
 
-  <div class="content">
-    <h1 class="page-title">🏦 Tableau de bord Admin</h1>
-    <p class="page-sub">Vue complète et confidentielle de la plateforme</p>
+  <div class="app-content">
+    <!-- DASHBOARD -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div class="welcome-bar">
+        <div class="welcome-av" id="dash-av">JP</div>
+        <div>
+          <div class="welcome-name" id="dash-name">Jean Pascal</div>
+          <div class="welcome-sub" id="dash-sub">Commerce général · Membre actif</div>
+        </div>
+      </div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Utilisateurs actifs</div>
-        <div class="stat-value" style="color:var(--blue)">247</div>
-        <div class="stat-change up">▲ +12 ce mois</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Revenus totaux</div>
-        <div class="stat-value" style="color:var(--gold)">123 500</div>
-        <div class="stat-change up">▲ +8.3% FCFA</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Abonnements actifs</div>
-        <div class="stat-value" style="color:var(--green)">189</div>
-        <div class="stat-change up">▲ +5 cette semaine</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Note moyenne</div>
-        <div class="stat-value" id="admin-avg-display" style="color:var(--gold)">—</div>
-        <div class="stat-change" id="admin-avg-sub">Aucun avis encore</div>
-      </div>
-    </div>
-
-    <!-- Utilisateurs -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-title">👥 Gestion des utilisateurs</div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Nom</th><th>Email</th><th>Rôle</th><th>Statut</th><th>Abonnement</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Jean Pascal</td><td>jeanpascal@mail.com</td><td>Gérant</td><td><span class="status-badge status-active">Actif</span></td><td>500 FCFA/mois</td></tr>
-            <tr><td>Marie Ntsama</td><td>marie@mail.com</td><td>Comptable</td><td><span class="status-badge status-active">Actif</span></td><td>500 FCFA/mois</td></tr>
-            <tr><td>Paul Mbarga</td><td>paul@mail.com</td><td>Employé</td><td><span class="status-badge status-pending">En attente</span></td><td>—</td></tr>
-            <tr><td>Sophie Biya</td><td>sophie@mail.com</td><td>Gérant</td><td><span class="status-badge status-inactive">Inactif</span></td><td>Expiré</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Avis des utilisateurs - Vue Admin -->
-    <div class="section">
-      <div class="section-header">
-        <div class="section-title">⭐ Avis & Notations (vue confidentielle)</div>
-      </div>
-      <div class="admin-reviews">
-        <div class="avg-score" id="admin-avg-block">
-          <div>
-            <div class="avg-big" id="avg-score-big">—</div>
-            <div class="avg-stars" id="avg-stars-display">☆☆☆☆☆</div>
-            <div class="avg-count" id="avg-count-text">0 avis</div>
+      <div class="capital-card">
+        <div class="capital-label">💰 Capital actuel</div>
+        <div class="capital-value"><span id="capital-display">0</span> <span class="capital-currency">FCFA</span></div>
+        <div class="capital-row">
+          <div class="capital-mini">
+            <div class="capital-mini-label">📈 Bénéfices</div>
+            <div class="capital-mini-val" id="benef-display" style="color:var(--green)">0 FCFA</div>
           </div>
- 
+          <div class="capital-mini">
+            <div class="capital-mini-label">📉 Pertes</div>
+            <div class="capital-mini-val" id="perte-display" style="color:var(--red)">0 FCFA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards2">
+        <div class="mini-card">
+          <div class="mini-card-icon">💳</div>
+          <div class="mini-card-label">Entrées totales</div>
+          <div class="mini-card-val" id="entrees-display" style="color:var(--green)">0</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-icon">💸</div>
+          <div class="mini-card-label">Sorties totales</div>
+          <div class="mini-card-val" id="sorties-display" style="color:var(--red)">0</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-icon">🏦</div>
+          <div class="mini-card-label">Épargne</div>
+          <div class="mini-card-val" id="epargne-display" style="color:var(--blue)">0</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-icon">📋</div>
+          <div class="mini-card-label">Prêts en cours</div>
+          <div class="mini-card-val" id="pret-display" style="color:var(--orange)">0</div>
+        </div>
+      </div>
+
+      <div class="conseil-banner" id="conseil-banner">
+        <div class="conseil-icon">💡</div>
+        <div class="conseil-text">
+          <strong>Conseil JYVOS</strong>
+          <span id="conseil-text">Bienvenue ! Commencez par enregistrer vos transactions pour voir vos bénéfices et pertes en temps réel.</span>
+        </div>
+      </div>
+
+      <div class="abo-banner" id="abo-banner">
+        <div class="abo-title">⚠️ Abonnement mensuel — 500 FCFA</div>
+        <div class="abo-text">Pour continuer à profiter de JYVOS Comptable, réglez votre abonnement mensuel via Orange Money.</div>
+        <div class="abo-om">Orange Money : <span>691 928 061</span> — Nom : <span>NGAH Ntsama</span></div>
+        <button class="btn-abo" onclick="confirmPaiement()">✅ J'ai effectué le paiement</button>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Transactions récentes</div>
+        <button class="btn-add" onclick="openAddTx()">+ Ajouter</button>
+      </div>
+      <div class="tx-list" id="tx-list">
+        <div class="empty-state"><div class="ei">📭</div>Aucune transaction encore.<br>Appuyez sur "+ Ajouter" pour commencer.</div>
+      </div>
+    </div>
+
+    <!-- FINANCES -->
+    <div class="tab-content" id="tab-finances">
+      <div class="section-title" style="margin-bottom:16px">📊 Analyse financière</div>
+
+      <div class="fin-section">
+        <div class="section-header">
+          <div class="section-title" style="font-size:14px">Bilan Capital</div>
+        </div>
+        <div class="fin-row"><span class="fin-row-label">Capital initial</span><span class="fin-row-val" id="f-capital">0 FCFA</span></div>
+        <div class="fin-row"><span class="fin-row-label">+ Entrées</span><span class="fin-row-val" style="color:var(--green)" id="f-in">0 FCFA</span></div>
+        <div class="fin-row"><span class="fin-row-label">− Sorties</span><span class="fin-row-val" style="color:var(--red)" id="f-out">0 FCFA</span></div>
+        <div class="fin-row"><span class="fin-row-label">= Capital actuel</span><span class="fin-row-val" id="f-now">0 FCFA</span></div>
+        <div class="fin-row"><span class="fin-row-label">Bénéfices nets</span><span class="fin-row-val" style="color:var(--green)" id="f-benef">0 FCFA</span></div>
+        <div class="fin-row"><span class="fin-row-label">Pertes nettes</span><span class="fin-row-val" style="color:var(--red)" id="f-perte">0 FCFA</span></div>
+      </div>
+
+      <div class="fin-section">
+        <div class="section-title" style="font-size:14px;margin-bottom:12px">🏦 Épargne</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;">
+          <span style="color:var(--muted)">Montant épargné</span>
+          <span style="color:var(--blue);font-weight:600" id="f-epargne">0 FCFA</span>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="epargne-bar" style="width:0%;background:var(--blue)"></div></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px" id="epargne-pct">0% du capital</div>
+      </div>
+
+      <div class="fin-section">
+        <div class="section-title" style="font-size:14px;margin-bottom:12px">📋 Prêts</div>
+        <div class="fin-row"><span class="fin-row-label">Prêts reçus</span><span class="fin-row-val" style="color:var(--orange)" id="f-pret-in">0 FCFA</span></div>
+        <div class="fin-row"><span class="fin-row-label">Prêts remboursés</span><span class="fin-row-val" style="color:var(--green)" id="f-pret-out">0 FCFA</span></div>
+        <div class="fin-row"><span class="fin-row-label">Solde prêts</span><span class="fin-row-val" style="color:var(--orange)" id="f-pret-solde">0 FCFA</span></div>
+      </div>
+
+      <div class="conseil-banner">
+        <div class="conseil-icon">📊</div>
+        <div class="conseil-text">
+          <strong>Analyse</strong>
+          <span id="analyse-text">Ajoutez des transactions pour voir votre analyse financière complète.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="tab-content" id="tab-messages">
+      <div id="msg-list-view">
+        <div class="section-title" style="margin-bottom:16px">💬 Messages</div>
+        <div class="msg-list">
+          <div class="msg-thread" onclick="openChat('support')">
+            <div class="msg-av msg-av-admin">🛡️</div>
+            <div class="msg-info">
+              <div class="msg-name">Assistance JYVOS</div>
+              <div class="msg-preview" id="support-preview">Bienvenue sur JYVOS ! Comment puis-je vous aider ?</div>
+            </div>
+            <div class="msg-meta">
+              <div class="msg-time" id="support-time">Maintenant</div>
+              <div class="msg-unread" id="support-unread">1</div>
+            </div>
+          </div>
+          <div class="msg-thread" onclick="openChat('system')">
+            <div class="msg-av msg-av-sys">⚙️</div>
+            <div class="msg-info">
+              <div class="msg-name">Notifications système</div>
+              <div class="msg-preview" id="sys-preview">Votre compte a été créé avec succès !</div>
+            </div>
+            <div class="msg-meta">
+              <div class="msg-time">Aujourd'hui</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;">
+          <span style="font-size:14px">🔒</span>
+          <span style="font-size:12px;color:var(--muted)">Tous vos messages sont <strong style="color:var(--text)">chiffrés de bout en bout</strong></span>
+        </div>
+      </div>
+
+      <!-- CHAT VIEW -->
+      <div class="chat-view" id="chat-view-support" style="height:calc(100vh - 180px)">
+        <div class="chat-header">
+          <div class="chat-back" onclick="closeChat('support')">←</div>
+          <div class="msg-av msg-av-admin" style="width:36px;height:36px;font-size:14px;">🛡️</div>
+          <div class="chat-header-info">
+            <div class="chat-header-name">Assistance JYVOS</div>
+            <div class="chat-header-status">● En ligne</div>
+          </div>
+          <div class="chat-enc">🔒 Chiffré</div>
+        </div>
+        <div class="chat-messages" id="chat-msgs-support"></div>
+        <div class="chat-input-wrap">
+          <input class="chat-input" id="chat-input-support" placeholder="Écrire un message..." onkeydown="if(event.key==='Enter')sendMsg('support')">
+          <button class="chat-send" onclick="sendMsg('support')">➤</button>
+        </div>
+      </div>
+
+      <div class="chat-view" id="chat-view-system" style="height:calc(100vh - 180px)">
+        <div class="chat-header">
+          <div class="chat-back" onclick="closeChat('system')">←</div>
+          <div class="msg-av msg-av-sys" style="width:36px;height:36px;font-size:14px;">⚙️</div>
+          <div class="chat-header-info">
+            <div class="chat-header-name">Notifications système</div>
+            <div class="chat-header-status">Automatique</div>
+          </div>
+          <div class="chat-enc">🔒 Chiffré</div>
+        </div>
+        <div class="chat-messages" id="chat-msgs-system">
+          <div class="msg-bubble recv">✅ Votre compte a été créé avec succès. Bienvenue sur JYVOS Comptable !<div class="btime">Aujourd'hui</div></div>
+          <div class="msg-bubble recv">📱 Votre abonnement mensuel de 500 FCFA est dû. Payez via Orange Money au 691 928 061.<div class="btime">Aujourd'hui</div></div>
+        </div>
+        <div class="chat-input-wrap">
+          <input class="chat-input" placeholder="Notifications automatiques uniquement" disabled>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFIL -->
+    <div class="tab-content" id="tab-profil">
+      <div class="section-title" style="margin-bottom:16px">👤 Mon profil</div>
+      <div style="background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+          <div class="tb-avatar" style="width:54px;height:54px;font-size:20px;" id="profil-av">JP</div>
+          <div>
+            <div style="font-family:'Clash Display',sans-serif;font-size:18px;font-weight:600;" id="profil-name">Jean Pascal</div>
+            <div style="font-size:13px;color:var(--muted);" id="profil-phone">+237 690 000 001</div>
+          </div>
+        </div>
+        <div class="fin-row"><span class="fin-row-label">Type de commerce</span><span class="fin-row-val" id="profil-type">Commerce général</span></div>
+        <div class="fin-row"><span class="fin-row-label">Membre depuis</span><span class="fin-row-val">Février 2026</span></div>
+        <div class="fin-row"><span class="fin-row-label">Statut abonnement</span><span class="fin-row-val" style="color:var(--green)">✅ Actif</span></div>
+      </div>
+
+      <div class="abo-banner">
+        <div class="abo-title">💳 Renouveler l'abonnement</div>
+        <div class="abo-text">Votre abonnement mensuel JYVOS est de <strong>500 FCFA/mois</strong>.</div>
+        <div class="abo-om">Orange Money : <span>691 928 061</span><br>Nom : <span>NGAH Ntsama</span></div>
+        <button class="btn-abo" onclick="confirmPaiement()">✅ Confirmer le paiement</button>
+      </div>
+
+      <button style="width:100%;padding:13px;border-radius:12px;background:var(--red-dim);border:1px solid rgba(231,76,60,.25);color:var(--red);font-size:14px;font-weight:600;cursor:pointer;font-family:'Clash Display',sans-serif;" onclick="logout()">
+        🚪 Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
+      <span class="nav-icon">🏠</span><span class="nav-label">Accueil</span>
+    </button>
+    <button class="nav-item" id="nav-finances" onclick="switchTab('finances')">
+      <span class="nav-icon">📊</span><span class="nav-label">Finances</span>
+    </button>
+    <button class="nav-item" id="nav-messages" onclick="switchTab('messages')">
+      <span class="nav-icon">💬</span><span class="nav-label">Messages</span>
+    </button>
+    <button class="nav-item" id="nav-profil" onclick="switchTab('profil')">
+      <span class="nav-icon">👤</span><span class="nav-label">Profil</span>
+    </button>
+  </div>
+</div>
+
+<!-- ======================================================
+     ADD TRANSACTION MODAL
+====================================================== -->
+<div class="modal-overlay" id="tx-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Nouvelle transaction</div>
+    <div class="type-toggle">
+      <button class="type-btn active-in" id="type-in" onclick="setTxType('in')">💚 Entrée d'argent</button>
+      <button class="type-btn" id="type-out" onclick="setTxType('out')">🔴 Sortie d'argent</button>
+    </div>
+    <div class="type-toggle" id="type-special-row">
+      <button class="type-btn" id="type-epargne" onclick="setTxType('epargne')">💙 Épargne</button>
+      <button class="type-btn" id="type-pret" onclick="setTxType('pret')">🟠 Prêt</button>
+    </div>
+    <div class="field">
+      <label>Description</label>
+      <input type="text" id="tx-desc" placeholder="Ex: Vente de produits, achat stock...">
+    </div>
+    <div class="field">
+      <label>Montant (FCFA)</label>
+      <input type="number" id="tx-amount" placeholder="Ex: 25000">
+    </div>
+    <div class="field">
+      <label>Catégorie</label>
+      <select id="tx-cat">
+        <option>Vente / Revenu</option>
+        <option>Achat / Stock</option>
+        <option>Salaire / Employé</option>
+        <option>Transport / Livraison</option>
+        <option>Loyer / Charges</option>
+        <option>Remboursement</option>
+        <option>Autre</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="addTransaction()">✅ Enregistrer</button>
+    <button class="btn-secondary" onclick="closeTxModal()">Annuler</button>
+  </div>
+</div>
+
+<!-- ======================================================
+     ADMIN PANEL
+====================================================== -->
+<div class="page" id="admin-page">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">J</div>
+      <div class="tb-title">JYVOS Admin</div>
+      <span class="tb-badge badge-admin">🛡️ Admin</span>
+    </div>
+    <div class="tb-right">
+      <div class="tb-avatar" style="background:linear-gradient(135deg,var(--gold),#7a4e10);color:#080a0e;">SA</div>
+      <button style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;" onclick="logout()">⬅</button>
+    </div>
+  </div>
+
+  <div class="admin-nav" id="admin-nav">
+    <div class="admin-tab active" onclick="switchAdminTab('users')">👥 Utilisateurs</div>
+    <div class="admin-tab" onclick="switchAdminTab('finances')">💰 Finances</div>
+    <div class="admin-tab" onclick="switchAdminTab('messages')">💬 Messages</div>
+    <div class="admin-tab" onclick="switchAdminTab('securite')">🛡️ Sécurité</div>
+  </div>
+
+  <div class="app-content">
+    <!-- USERS -->
+    <div class="tab-content active" id="admin-tab-users" style="padding:16px;">
+      <div class="section-header">
+        <div class="section-title">Comptes utilisateurs (<span id="user-count">1</span>)</div>
+      </div>
+      <div id="admin-users-list"></div>
+    </div>
+
+    <!-- FINANCES ADMIN -->
+    <div class="tab-content" id="admin-tab-finances" style="padding:16px;">
+      <div class="section-title" style="margin-bottom:16px">💰 Vue financière globale</div>
+      <div class="cards2" style="margin-bottom:18px;">
+        <div class="mini-card"><div class="mini-card-icon">👥</div><div class="mini-card-label">Utilisateurs</div><div class="mini-card-val" id="adm-total-users">1</div></div>
+        <div class="mini-card"><div class="mini-card-icon">💳</div><div class="mini-card-label">Abonnements</div><div class="mini-card-val" style="color:var(--green)" id="adm-abo">500 FCFA</div></div>
+        <div class="mini-card"><div class="mini-card-icon">📈</div><div class="mini-card-label">Capital total</div><div class="mini-card-val" style="color:var(--gold)" id="adm-capital">0 FCFA</div></div>
+        <div class="mini-card"><div class="mini-card-icon">🏦</div><div class="mini-card-label">Épargnes totales</div><div class="mini-card-val" style="color:var(--blue)" id="adm-epargne">0 FCFA</div></div>
+      </div>
+      <div id="admin-finances-detail"></div>
+    </div>
+
+    <!-- MESSAGES ADMIN -->
+    <div class="tab-content" id="admin-tab-messages" style="padding:0;">
+      <div id="admin-msg-list-view" style="padding:16px;">
+        <div class="section-title" style="margin-bottom:14px">Conversations avec les utilisateurs</div>
+        <div id="admin-convos-list"></div>
+      </div>
+      <div class="chat-view" id="admin-chat-view" style="height:calc(100vh - 170px)">
+        <div class="chat-header">
+          <div class="chat-back" onclick="closeAdminChat()">←</div>
+          <div class="tb-avatar" style="width:36px;height:36px;font-size:14px;" id="admin-chat-av">U</div>
+          <div class="chat-header-info">
+            <div class="chat-header-name" id="admin-chat-name">Utilisateur</div>
+            <div class="chat-header-status">Chat privé chiffré</div>
+          </div>
+          <div class="chat-enc">🔒 E2E</div>
+        </div>
+        <div class="chat-messages" id="admin-chat-msgs"></div>
+        <div class="chat-input-wrap">
+          <input class="chat-input" id="admin-chat-input" placeholder="Répondre à l'utilisateur..." onkeydown="if(event.key==='Enter')adminSendMsg()">
+          <button class="chat-send" onclick="adminSendMsg()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITE -->
+    <div class="tab-content" id="admin-tab-securite" style="padding:16px;">
+      <div class="section-title" style="margin-bottom:16px">🛡️ Sécurité & Paramètres</div>
+      <div style="background:var(--dark2);border:1px solid var(--border-gold);border-radius:var(--r);padding:20px;">
+        <div class="fin-row"><span class="fin-row-label">Chiffrement E2E actif</span><span style="color:var(--green);font-size:14px">✅ Activé</span></div>
+        <div class="fin-row"><span class="fin-row-label">Double authentification</span><span style="color:var(--green);font-size:14px">✅ Activé</span></div>
+        <div class="fin-row"><span class="fin-row-label">Journaux d'audit</span><span style="color:var(--green);font-size:14px">✅ Actif</span></div>
+        <div class="fin-row"><span class="fin-row-label">Sessions chiffrées</span><span style="color:var(--green);font-size:14px">✅ HTTPS</span></div>
+        <div class="fin-row"><span class="fin-row-label">Accès admin masqué</span><span style="color:var(--green);font-size:14px">✅ Restreint</span></div>
+        <div class="fin-row"><span class="fin-row-label">Tentatives de connexion</span><span style="color:var(--muted);font-size:14px" id="login-attempts">0 tentative(s)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Message</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+var DB = {
+  users: [
+    { id:'demo', name:'Jean Pascal Ngah', phone:'690000001', pass:'demo123', type:'Commerce général', capital:150000, transactions:[], epargne:0, pretIn:0, pretOut:0, messages:[], abo:true }
+  ],
+  currentUser: null,
+  adminMessages: {},  // keyed by user id
+  txType: 'in',
+  adminAttempts: 0
+};
+
+var ADMIN_CREDS = { id:'jyvosadmin', pass:'Admin@JYVOS2026!', code:'982761' };
+
+var CONSEILS = [
+  "💡 Conseil : Épargnez au moins 10% de chaque bénéfice pour constituer une réserve de sécurité.",
+  "📊 Analyse : Vos sorties dépassent vos entrées ce mois. Réduisez vos dépenses non essentielles.",
+  "🚀 Astuce : Suivez vos stocks de près pour éviter les ruptures qui font perdre des ventes.",
+  "💰 Tip : Diversifiez vos sources de revenus pour réduire les risques financiers.",
+  "📈 Stratégie : Réinvestissez 30% de vos bénéfices pour faire croître votre capital.",
+  "🏦 Épargne : Avec votre épargne actuelle, vous pourrez couvrir vos charges pendant plusieurs semaines.",
+  "⚠️ Attention : Vos prêts en cours nécessitent un suivi régulier pour éviter les retards.",
+  "✅ Bravo : Votre capital a augmenté ! Continuez à enregistrer toutes vos transactions."
+];
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function goTo(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+}
+
+function logout() {
+  DB.currentUser = null;
+  goTo('landing');
+}
+
+function showForgot() {
+  showToast('📱 Envoi du lien de réinitialisation par SMS...','t-info');
+  setTimeout(()=>showToast('✅ SMS envoyé ! Vérifiez votre téléphone.','t-ok'),1500);
+}
+
+// ============================================================
+// REGISTER
+// ============================================================
+var regData = {};
+var genCode = '';
+
+function sendCode() {
+  var name = document.getElementById('reg-name').value.trim();
+  var phone = document.getElementById('reg-phone').value.trim();
+  var type = document.getElementById('reg-type').value;
+  var capital = parseInt(document.getElementById('reg-capital').value)||0;
+  var pass = document.getElementById('reg-pass').value;
+  var pass2 = document.getElementById('reg-pass2').value;
+  var err = document.getElementById('reg-err');
+
+  err.classList.remove('show');
+
+  if (!name||name.length<3){ showErr(err,'Entrez votre nom complet'); return; }
+  if (!phone||phone.length<8){ showErr(err,'Numéro de téléphone invalide'); return; }
+  if (!type){ showErr(err,'Sélectionnez votre type de commerce'); return; }
+  if (capital<=0){ showErr(err,'Entrez votre capital de départ'); return; }
+  if (pass.length<6){ showErr(err,'Le mot de passe doit avoir au moins 6 caractères'); return; }
+  if (pass!==pass2){ showErr(err,'Les mots de passe ne correspondent pas'); return; }
+  if (DB.users.find(u=>u.phone===phone)){ showErr(err,'Ce numéro est déjà inscrit'); return; }
+
+  regData = {name,phone,type,capital,pass};
+  genCode = '1234'; // demo fixed code
+  document.getElementById('phone-display').textContent = '+237 '+phone;
+  document.getElementById('reg-step1').style.display='none';
+  document.getElementById('reg-step2').style.display='block';
+  showToast('📲 Code envoyé au +237 '+phone,'t-info');
+}
+
+function nextCode(el,nextId) {
+  if(el.value&&nextId) document.getElementById(nextId).focus();
+}
+
+function verifyCode() {
+  var entered = ['c1','c2','c3','c4'].map(id=>document.getElementById(id).value).join('');
+  var err = document.getElementById('code-err');
+  err.classList.remove('show');
+  if(entered!==genCode){ showErr(err,'Code incorrect. Réessayez. (Démo: 1234)'); return; }
+
+  var newUser = {
+    id: 'u_'+Date.now(),
+    name: regData.name,
+    phone: regData.phone,
+    pass: regData.pass,
+    type: regData.type,
+    capital: regData.capital,
+    transactions: [],
+    epargne: 0, pretIn:0, pretOut:0,
+    messages:[{from:'system',text:'🎉 Compte créé avec succès ! Bienvenue sur JYVOS Comptable.',time:now()}],
+    abo: false,
+    createdAt: new Date().toLocaleDateString('fr-FR')
+  };
+  DB.users.push(newUser);
+  DB.currentUser = newUser;
+  DB.adminMessages[newUser.id] = [];
+
+  // Init support msg
+  newUser.messages = [
+    {from:'admin',text:'Bienvenue sur JYVOS ! 👋 Je suis votre assistant financier. Comment puis-je vous aider ?',time:now()}
+  ];
+
+  initUserApp();
+  showToast('🎉 Compte créé avec succès !','t-ok');
+  setTimeout(()=>goTo('app-page'),500);
+}
+
+function resendCode() {
+  showToast('📲 Code renvoyé !','t-info');
+}
+
+function showErr(el,msg) { el.textContent=msg; el.classList.add('show'); }
+
+// ============================================================
+// LOGIN
+// ============================================================
+function doLogin() {
+  var phone = document.getElementById('login-phone').value.trim();
+  var pass = document.getElementById('login-pass').value;
+  var err = document.getElementById('login-err');
+  err.classList.remove('show');
+
+  var user = DB.users.find(u=>u.phone===phone&&u.pass===pass);
+  if(!user){ showErr(err,'Numéro ou mot de passe incorrect'); return; }
+
+  DB.currentUser = user;
+  if(!DB.adminMessages[user.id]) DB.adminMessages[user.id]=[];
+  initUserApp();
+  goTo('app-page');
+}
+
+function doAdminLogin() {
+  var id = document.getElementById('admin-id').value.trim();
+  var pass = document.getElementById('admin-pass').value;
+  var code = document.getElementById('admin-code').value.trim();
+  var err = document.getElementById('admin-err');
+  err.classList.remove('show');
+
+  DB.adminAttempts++;
+  document.getElementById('login-attempts').textContent = DB.adminAttempts+' tentative(s)';
+
+  if(id===ADMIN_CREDS.id && pass===ADMIN_CREDS.pass && code===ADMIN_CREDS.code){
+    initAdminPanel();
+    goTo('admin-page');
+    showToast('🛡️ Accès administrateur accordé','t-ok');
+  } else {
+    showErr(err,'Identifiants incorrects. Accès refusé.');
+    showToast('⛔ Tentative échouée — enregistrée','t-err');
+  }
+}
+
+// ============================================================
+// USER APP
+// ============================================================
+function initUserApp() {
+  var u = DB.currentUser;
+  var initials = u.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  ['user-av','dash-av','profil-av'].forEach(id=>{ var el=document.getElementById(id); if(el) el.textContent=initials; });
+  document.getElementById('dash-name').textContent = u.name.split(' ')[0];
+  document.getElementById('dash-sub').textContent = u.type+' · '+(u.abo?'Abonnement actif':'Abonnement requis');
+  document.getElementById('profil-name').textContent = u.name;
+  document.getElementById('profil-phone').textContent = '+237 '+u.phone;
+  document.getElementById('profil-type').textContent = u.type;
+  document.getElementById('abo-banner').style.display = u.abo ? 'none':'block';
+  renderTransactions();
+  updateFinances();
+  loadSupportChat();
+  updateConseil();
+}
+
+function switchTab(tab) {
+  ['dashboard','finances','messages','profil'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.remove('active');
+    document.getElementById('nav-'+t).classList.remove('active');
+  });
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('nav-'+tab).classList.add('active');
+  if(tab==='messages'){
+    // close any open chat
+    document.getElementById('msg-list-view').style.display='block';
+    document.querySelectorAll('.chat-view').forEach(c=>c.classList.remove('open'));
+  }
+}
+
+// ============================================================
+// TRANSACTIONS
+// ============================================================
+function setTxType(t) {
+  DB.txType = t;
+  ['in','out','epargne','pret'].forEach(type=>{
+    var btn = document.getElementById('type-'+type);
+    if(!btn) return;
+    btn.className='type-btn';
+    if(type===t){
+      if(t==='in') btn.className='type-btn active-in';
+      else if(t==='out') btn.className='type-btn active-out';
+      else if(t==='epargne') btn.className='type-btn';btn.style.background=t==='epargne'?'var(--blue-dim)':t==='pret'?'var(--orange-dim)':'';
+      btn.style.borderColor = t==='epargne'?'rgba(41,128,185,.3)':t==='pret'?'rgba(230,126,34,.3)':'';
+      btn.style.color = t==='epargne'?'var(--blue)':t==='pret'?'var(--orange)':'';
+    } else { btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }
+  });
+}
+
+function openAddTx() { document.getElementById('tx-modal').classList.add('open'); }
+function closeTxModal() { document.getElementById('tx-modal').classList.remove('open'); }
+
+function addTransaction() {
+  var desc = document.getElementById('tx-desc').value.trim();
+  var amount = parseInt(document.getElementById('tx-amount').value)||0;
+  var cat = document.getElementById('tx-cat').value;
+  var type = DB.txType;
+
+  if(!desc){ showToast('Entrez une description','t-err'); return; }
+  if(amount<=0){ showToast('Entrez un montant valide','t-err'); return; }
+
+  var tx = { desc, amount, cat, type, date:new Date().toLocaleDateString('fr-FR'), time:now() };
+  DB.currentUser.transactions.unshift(tx);
+
+  // update capital
+  if(type==='in') DB.currentUser.capital += amount;
+  else if(type==='out') DB.currentUser.capital -= amount;
+  else if(type==='epargne'){ DB.currentUser.epargne += amount; DB.currentUser.capital -= amount; }
+  else if(type==='pret'){ DB.currentUser.pretIn += amount; DB.currentUser.capital += amount; }
+
+  renderTransactions();
+  updateFinances();
+  updateConseil();
+  closeTxModal();
+  document.getElementById('tx-desc').value='';
+  document.getElementById('tx-amount').value='';
+  setTxType('in');
+  showToast('✅ Transaction enregistrée !','t-ok');
+}
+
+function renderTransactions() {
+  var u = DB.currentUser;
+  var el = document.getElementById('tx-list');
+  if(!u.transactions.length){
+    el.innerHTML='<div class="empty-state"><div class="ei">📭</div>Aucune transaction encore.<br>Appuyez sur "+ Ajouter" pour commencer.</div>';
+    return;
+  }
+  el.innerHTML = u.transactions.slice(0,10).map(tx=>{
+    var isIn = tx.type==='in'||tx.type==='pret';
+    var icon = tx.type==='in'?'💚':tx.type==='out'?'🔴':tx.type==='epargne'?'💙':'🟠';
+    var sign = isIn?'+':'-';
+    var cls = isIn?'in':'out';
+    return `<div class="tx-item">
+      <div class="tx-icon ${cls}">${icon}</div>
+      <div class="tx-desc"><div class="tx-name">${tx.desc}</div><div class="tx-date">${tx.cat} · ${tx.date}</div></div>
+      <div class="tx-amount ${cls}">${sign}${fmt(tx.amount)}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateFinances() {
+  var u = DB.currentUser;
+  var totalIn = u.transactions.filter(t=>t.type==='in').reduce((s,t)=>s+t.amount,0);
+  var totalOut = u.transactions.filter(t=>t.type==='out').reduce((s,t)=>s+t.amount,0);
+  var benef = totalIn > totalOut ? totalIn - totalOut : 0;
+  var perte = totalOut > totalIn ? totalOut - totalIn : 0;
+  var capitalInit = parseFloat(localStorage.getItem('capital_'+u.id)||u.capital)||u.capital;
+
+  set('capital-display', fmt(u.capital));
+  set('benef-display', fmt(benef)+' FCFA');
+  set('perte-display', fmt(perte)+' FCFA');
+  set('entrees-display', fmt(totalIn)+' FCFA');
+  set('sorties-display', fmt(totalOut)+' FCFA');
+  set('epargne-display', fmt(u.epargne)+' FCFA');
+  set('pret-display', fmt(u.pretIn)+' FCFA');
+
+  // Finances tab
+  set('f-capital', fmt(capitalInit)+' FCFA');
+  set('f-in', '+'+fmt(totalIn)+' FCFA');
+  set('f-out', '-'+fmt(totalOut)+' FCFA');
+  set('f-now', fmt(u.capital)+' FCFA');
+  set('f-benef', fmt(benef)+' FCFA');
+  set('f-perte', fmt(perte)+' FCFA');
+  set('f-epargne', fmt(u.epargne)+' FCFA');
+  set('f-pret-in', fmt(u.pretIn)+' FCFA');
+  set('f-pret-out', fmt(u.pretOut)+' FCFA');
+  set('f-pret-solde', fmt(u.pretIn-u.pretOut)+' FCFA');
+
+  var pct = u.capital>0 ? Math.min(100,Math.round(u.epargne/u.capital*100)) : 0;
+  document.getElementById('epargne-bar').style.width=pct+'%';
+  set('epargne-pct', pct+'% du capital actuel');
+
+  // Analysis text
+  var analysis = benef>0 ? '📈 Votre entreprise est bénéficiaire ce mois. Félicitations ! Pensez à épargner une partie.'
+    : perte>0 ? '⚠️ Vos sorties dépassent vos entrées. Analysez vos dépenses et trouvez comment augmenter vos revenus.'
+    : 'Enregistrez vos transactions pour voir votre analyse financière.';
+  set('analyse-text', analysis);
+}
+
+function updateConseil() {
+  var u = DB.currentUser;
+  var totalIn = u.transactions.filter(t=>t.type==='in').reduce((s,t)=>s+t.amount,0);
+  var totalOut = u.transactions.filter(t=>t.type==='out').reduce((s,t)=>s+t.amount,0);
+  var idx = 0;
+  if(u.transactions.length===0) idx=0;
+  else if(totalOut>totalIn) idx=1;
+  else if(u.epargne>0) idx=5;
+  else idx = Math.floor(Math.random()*CONSEILS.length);
+  set('conseil-text', CONSEILS[idx].replace(/^💡 Conseil : |^📊 Analyse : |^🚀 Astuce : |^💰 Tip : |^📈 Stratégie : |^🏦 Épargne : |^⚠️ Attention : |^✅ Bravo : /,''));
+}
+
+function confirmPaiement() {
+  DB.currentUser.abo = true;
+  document.getElementById('abo-banner').style.display='none';
+  showToast('✅ Paiement confirmé ! Abonnement actif.','t-ok');
+  // System msg
+  DB.currentUser.messages.push({from:'system',text:'✅ Abonnement mensuel confirmé. Merci pour votre paiement !',time:now()});
+}
+
+// ============================================================
+// MESSAGES / CHAT
+// ============================================================
+function loadSupportChat() {
+  var u = DB.currentUser;
+  var el = document.getElementById('chat-msgs-support');
+  el.innerHTML='';
+  u.messages.forEach(m=>{
+    el.innerHTML += `<div class="msg-bubble ${m.from==='user'?'sent':'recv'}">${m.text}<div class="btime">${m.time}</div></div>`;
+  });
+  el.scrollTop=el.scrollHeight;
+}
+
+function openChat(type) {
+  document.getElementById('msg-list-view').style.display='none';
+  document.getElementById('chat-view-'+type).classList.add('open');
+  if(type==='support'){
+    document.getElementById('support-unread').style.display='none';
+    document.getElementById('notif-dot').style.display='none';
+    loadSupportChat();
+  }
+}
+
+function closeChat(type) {
+  document.getElementById('chat-view-'+type).classList.remove('open');
+  document.getElementById('msg-list-view').style.display='block';
+}
+
+function sendMsg(type) {
+  var inp = document.getElementById('chat-input-'+type);
+  var text = inp.value.trim();
+  if(!text) return;
+  var u = DB.currentUser;
+  u.messages.push({from:'user',text,time:now()});
+  inp.value='';
+  loadSupportChat();
+
+  // Sync to admin
+  if(!DB.adminMessages[u.id]) DB.adminMessages[u.id]=[];
+  DB.adminMessages[u.id].push({from:'user',name:u.name,text,time:now()});
+
+  // Auto reply after 1.5s
+  setTimeout(()=>{
+    var replies = [
+      'Merci pour votre message ! Un de nos agents va vous répondre dans les plus brefs délais.',
+      'Nous avons bien reçu votre demande. Pouvez-vous nous donner plus de détails ?',
+      'Votre question est bien notée. Voici quelques conseils : assurez-vous d\'enregistrer toutes vos transactions quotidiennement.',
+      'Pour toute question sur votre abonnement, vous pouvez payer via Orange Money au 691 928 061.'
+    ];
+    var reply = replies[Math.floor(Math.random()*replies.length)];
+    u.messages.push({from:'admin',text:reply,time:now()});
+    DB.adminMessages[u.id].push({from:'admin',text:reply,time:now()});
+    loadSupportChat();
+    document.getElementById('support-preview').textContent=reply;
+    document.getElementById('support-time').textContent='Maintenant';
+  },1500);
+}
+
+// ============================================================
+// ADMIN PANEL
+// ============================================================
+function initAdminPanel() {
+  switchAdminTab('users');
+}
+
+function switchAdminTab(tab) {
+  ['users','finances','messages','securite'].forEach(t=>{
+    document.getElementById('admin-tab-'+t).classList.remove('active');
+  });
+  document.getElementById('admin-tab-'+tab).classList.add('active');
+  document.querySelectorAll('.admin-tab').forEach((el,i)=>{
+    el.classList.remove('active');
+    if(['users','finances','messages','securite'][i]===tab) el.classList.add('active');
+  });
+  if(tab==='users') renderAdminUsers();
+  else if(tab==='finances') renderAdminFinances();
+  else if(tab==='messages') renderAdminMessages();
+
+  // close admin chat
+  document.getElementById('admin-msg-list-view').style.display='block';
+  document.getElementById('admin-chat-view').classList.remove('open');
+}
+
+function renderAdminUsers() {
+  var el = document.getElementById('admin-users-list');
+  document.getElementById('user-count').textContent = DB.users.length;
+  el.innerHTML = DB.users.map(u=>{
+    var totalIn = u.transactions.filter(t=>t.type==='in').reduce((s,t)=>s+t.amount,0);
+    var totalOut = u.transactions.filter(t=>t.type==='out').reduce((s,t)=>s+t.amount,0);
+    var init = u.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="user-card-admin">
+      <div class="uca-top">
+        <div class="uca-av">${init}</div>
+        <div>
+          <div class="uca-name">${u.name}</div>
+          <div class="uca-phone">+237 ${u.phone} · ${u.type}</div>
+        </div>
+        <div style="margin-left:auto;font-size:12px;padding:4px 10px;border-radius:20px;background:${u.abo?'var(--green-dim)':'var(--red-dim)'};color:${u.abo?'var(--green)':'var(--red)'};">${u.abo?'✅ Abonné':'❌ Non payé'}</div>
+      </div>
+      <div class="uca-stats">
+        <div class="uca-stat"><div class="uca-stat-label">Capital</div><div class="uca-stat-val" style="color:var(--gold)">${fmt(u.capital)}</div></div>
+        <div class="uca-stat"><div class="uca-stat-label">Entrées</div><div class="uca-stat-val" style="color:var(--green)">+${fmt(totalIn)}</div></div>
+        <div class="uca-stat"><div class="uca-stat-label">Sorties</div><div class="uca-stat-val" style="color:var(--red)">-${fmt(totalOut)}</div></div>
+      </div>
+      <button class="btn-msg-user" onclick="openAdminChat('${u.id}')">💬 Envoyer un message</button>
+    </div>`;
+  }).join('');
+}
+
+function renderAdminFinances() {
+  var totalCapital = DB.users.reduce((s,u)=>s+u.capital,0);
+  var totalEpargne = DB.users.reduce((s,u)=>s+u.epargne,0);
+  document.getElementById('adm-total-users').textContent = DB.users.length;
+  document.getElementById('adm-abo').textContent = (DB.users.filter(u=>u.abo).length*500)+' FCFA';
+  document.getElementById('adm-capital').textContent = fmt(totalCapital)+' FCFA';
+  document.getElementById('adm-epargne').textContent = fmt(totalEpargne)+' FCFA';
+
+  var el = document.getElementById('admin-finances-detail');
+  el.innerHTML = DB.users.map(u=>{
+    var totalIn = u.transactions.filter(t=>t.type==='in').reduce((s,t)=>s+t.amount,0);
+    var totalOut = u.transactions.filter(t=>t.type==='out').reduce((s,t)=>s+t.amount,0);
+    var benef = totalIn>totalOut?totalIn-totalOut:0;
+    var perte = totalOut>totalIn?totalOut-totalIn:0;
+    return `<div style="background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;">
+      <div style="font-family:'Clash Display',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px;">${u.name}</div>
+      <div class="fin-row"><span class="fin-row-label">Capital actuel</span><span class="fin-row-val" style="color:var(--gold)">${fmt(u.capital)} FCFA</span></div>
+      <div class="fin-row"><span class="fin-row-label">Entrées totales</span><span class="fin-row-val" style="color:var(--green)">+${fmt(totalIn)} FCFA</span></div>
+      <div class="fin-row"><span class="fin-row-label">Sorties totales</span><span class="fin-row-val" style="color:var(--red)">-${fmt(totalOut)} FCFA</span></div>
+      <div class="fin-row"><span class="fin-row-label">Bénéfices</span><span class="fin-row-val" style="color:var(--green)">${fmt(benef)} FCFA</span></div>
+      <div class="fin-row"><span class="fin-row-label">Pertes</span><span class="fin-row-val" style="color:var(--red)">${fmt(perte)} FCFA</span></div>
+      <div class="fin-row"><span class="fin-row-label">Épargne</span><span class="fin-row-val" style="color:var(--blue)">${fmt(u.epargne)} FCFA</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderAdminMessages() {
+  var el = document.getElementById('admin-convos-list');
+  if(!DB.users.length){ el.innerHTML='<div class="empty-state"><div class="ei">💬</div>Aucun utilisateur.</div>'; return; }
+  el.innerHTML = DB.users.map(u=>{
+    var msgs = DB.adminMessages[u.id]||[];
+    var last = msgs.length?msgs[msgs.length-1].text:'Aucun message';
+    var init = u.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="msg-thread" onclick="openAdminChat('${u.id}')">
+      <div class="msg-av" style="background:linear-gradient(135deg,var(--blue),#1a5276);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;">${init}</div>
+      <div class="msg-info">
+        <div class="msg-name">${u.name}</div>
+        <div class="msg-preview">${last.slice(0,50)}${last.length>50?'...':''}</div>
+      </div>
+      <div class="msg-meta"><div class="msg-time">${msgs.length?msgs[msgs.length-1].time:'—'}</div></div>
+    </div>`;
+  }).join('');
+}
+
+var adminChatUserId = null;
+
+function openAdminChat(userId) {
+  adminChatUserId = userId;
+  var u = DB.users.find(u=>u.id===userId);
+  var init = u.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('admin-chat-av').textContent = init;
+  document.getElementById('admin-chat-name').textContent = u.name;
+
+  document.getElementById('admin-msg-list-view').style.display='none';
+  document.getElementById('admin-chat-view').classList.add('open');
+  loadAdminChatMsgs();
+}
+
+function closeAdminChat() {
+  document.getElementById('admin-chat-view').classList.remove('open');
+  document.getElementById('admin-msg-list-view').style.display='block';
+  renderAdminMessages();
+}
+
+function loadAdminChatMsgs() {
+  var msgs = DB.adminMessages[adminChatUserId]||[];
+  var el = document.getElementById('admin-chat-msgs');
+  if(!msgs.length){ el.innerHTML='<div class="empty-state"><div class="ei">💬</div>Aucun message. Démarrez la conversation.</div>'; return; }
+  el.innerHTML = msgs.map(m=>{
+    var sent = m.from==='admin';
+    return `<div class="msg-bubble ${sent?'sent':'recv'}">${m.text}<div class="btime">${m.time}</div></div>`;
+  }).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+function adminSendMsg() {
+  var inp = document.getElementById('admin-chat-input');
+  var text = inp.value.trim();
+  if(!text||!adminChatUserId) return;
+  if(!DB.adminMessages[adminChatUserId]) DB.adminMessages[adminChatUserId]=[];
+  var msg = {from:'admin',text,time:now()};
+  DB.adminMessages[adminChatUserId].push(msg);
+  inp.value='';
+  loadAdminChatMsgs();
+
+  // Also deliver to user if they're the current user
+  var u = DB.users.find(u=>u.id===adminChatUserId);
+  if(u){
+    u.messages.push({from:'admin',text,time:now()});
+    // update preview
+    if(DB.currentUser&&DB.currentUser.id===adminChatUserId){
+      document.getElementById('support-preview').textContent=text;
+      document.getElementById('notif-dot').style.display='block';
+      document.getElementById('support-unread').style.display='flex';
+      loadSupportChat();
+    }
+  }
+  showToast('✅ Message envoyé','t-ok');
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function set(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
+function fmt(n){ return Number(n).toLocaleString('fr-FR'); }
+function now(){ return new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+function showToast(msg,cls){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+(cls||'t-ok');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// Close modal on overlay click
+document.getElementById('tx-modal').addEventListener('click',function(e){ if(e.target===this) closeTxModal(); });
+</script>
+</body>
+</html>
