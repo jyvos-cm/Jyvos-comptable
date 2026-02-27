@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+tt<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -874,6 +874,14 @@ if(DB.currentUser){
   if(!ts.ok&&!u.paid){showPage('blocked-page');checkPending();}
   else{enterApp(u);}
 }
+  <script>
+function showPage(pageId) {
+    const pages = document.querySelectorAll(".page");
+    pages.forEach(page => page.style.display = "none");
+
+    const target = document.getElementById(pageId);
+    if (target) target.style.display = "block";
+  }
 </script>
 </body>
 </html>
